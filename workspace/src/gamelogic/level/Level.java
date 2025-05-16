@@ -193,11 +193,52 @@ public class Level {
 	}
 	
 	
-	//#############################################################################################################
-	//Your code goes here! 
+	
 	//Please make sure you read the rubric/directions carefully and implement the solution recursively!
+
+	// Pre condition the function is called with inputs of the number column the row the map that it is being called on and the fullness of the water
+
+	// post condition generates the water according the the map in the proper problem
 	private void water(int col, int row, Map map, int fullness) {
+	
+		String waterType = "Full_water";
+			if (fullness == 2){
+				waterType = "Half_water";
+			}
+			else if (fullness == 1){
+				waterType = "Quarter_water";
+			}
+			else if (fullness == 0){
+				waterType = "Falling_water";
+			}
+		Water w = new Water (col, row, tileSize, tileset.getImage(waterType), this, fullness);
+
+		map.addTile(col, row, w);
+
+		if (map.getTiles()[0].length>row+1 && !map.getTiles()[col][row+1].isSolid()){
+			if(map.getTiles()[0].length>row+2 && !map.getTiles()[col][row+2].isSolid())
+				//either falling or full water block depending on row+2
+				water(col, row+1,map,0);
+			else{
+				water(col, row+1,map,3);
+			}
+			
+		}
+		else{
 		
+		int newFull = 1;
+		if (fullness>1){
+			newFull = fullness - 1;
+		}
+		
+		if(col+1 < map.getTiles().length && !(map.getTiles()[col+1][row] instanceof Water) && !map.getTiles()[col+1][row].isSolid()) {
+			water(col+1, row, map, newFull);
+		}
+		//left
+		if(col-1 >= 0 && !(map.getTiles()[col-1][row] instanceof Water && !map.getTiles()[col-1][row].isSolid())) {
+			water(col-1, row, map, newFull);
+		}
+	}
 	}
 
 
